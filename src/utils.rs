@@ -2,11 +2,11 @@ use crate::error::{EvmError, Result};
 
 pub fn hex_to_bytes(input: &str) -> Result<Vec<u8>> {
     let input = input.strip_prefix("0x").unwrap_or(input);
-    
+
     if input.len() % 2 != 0 {
         return Err(EvmError::InvalidHex("odd length hex string".to_string()));
     }
-    
+
     hex::decode(input).map_err(|e| EvmError::InvalidHex(e.to_string()))
 }
 

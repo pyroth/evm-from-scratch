@@ -1,25 +1,25 @@
-use primitive_types::U256;
 use crate::error::{EvmError, Result};
 use crate::opcodes;
 use crate::stack::Stack;
+use primitive_types::U256;
 
 pub fn handle_push(opcode: u8, stack: &mut Stack, bytecode: &[u8], pc: &mut usize) -> Result<()> {
     let bytes_to_push = (opcode - opcodes::PUSH0) as usize;
-    
+
     if bytes_to_push == 0 {
         stack.push(U256::zero())?;
         return Ok(());
     }
-    
+
     if *pc + bytes_to_push > bytecode.len() {
         return Err(EvmError::InvalidPush);
     }
-    
+
     let mut value = U256::zero();
     for i in 0..bytes_to_push {
         value = (value << 8) | U256::from(bytecode[*pc + i]);
     }
-    
+
     *pc += bytes_to_push;
     stack.push(value)?;
     Ok(())
@@ -28,11 +28,11 @@ pub fn handle_push(opcode: u8, stack: &mut Stack, bytecode: &[u8], pc: &mut usiz
 pub fn handle_dup(opcode: u8, stack: &mut Stack) -> Result<()> {
     let dup_index = (opcode - opcodes::DUP1 + 1) as usize;
     let size = stack.len();
-    
+
     if size < dup_index {
         return Err(EvmError::InvalidDup);
     }
-    
+
     let value = stack.at(size - dup_index)?;
     stack.push(value)?;
     Ok(())
@@ -41,11 +41,11 @@ pub fn handle_dup(opcode: u8, stack: &mut Stack) -> Result<()> {
 pub fn handle_swap(opcode: u8, stack: &mut Stack) -> Result<()> {
     let swap_index = (opcode - opcodes::SWAP1 + 1) as usize;
     let size = stack.len();
-    
+
     if size <= swap_index {
         return Err(EvmError::InvalidSwap);
     }
-    
+
     stack.swap(size - 1, size - 1 - swap_index)?;
     Ok(())
 }

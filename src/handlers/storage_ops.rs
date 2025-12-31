@@ -25,14 +25,14 @@ mod tests {
     fn test_sstore_sload() {
         let mut storage = Storage::new();
         let mut stack = Stack::new();
-        
+
         stack.push(U256::from(100)).unwrap();
         stack.push(U256::from(1)).unwrap();
         handle_sstore(&mut storage, &mut stack).unwrap();
-        
+
         stack.push(U256::from(1)).unwrap();
         handle_sload(&storage, &mut stack).unwrap();
-        
+
         assert_eq!(stack.top().unwrap(), U256::from(100));
     }
 }

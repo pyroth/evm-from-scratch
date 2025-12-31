@@ -1,10 +1,12 @@
-use primitive_types::U256;
 use crate::error::{EvmError, Result};
-use crate::handlers::{handle_arithmetic, handle_push, handle_dup, handle_swap, handle_sload, handle_sstore};
-use crate::opcodes::{self, is_push, is_dup, is_swap};
+use crate::handlers::{
+    handle_arithmetic, handle_dup, handle_push, handle_sload, handle_sstore, handle_swap,
+};
+use crate::memory::Memory;
+use crate::opcodes::{self, is_dup, is_push, is_swap};
 use crate::stack::Stack;
 use crate::storage::Storage;
-use crate::memory::Memory;
+use primitive_types::U256;
 
 #[derive(Debug, Default)]
 pub struct Evm {
@@ -47,13 +49,31 @@ impl Evm {
             }
 
             // Arithmetic & Comparison & Bitwise Operations
-            opcodes::ADD | opcodes::MUL | opcodes::SUB | opcodes::DIV | 
-            opcodes::SDIV | opcodes::MOD | opcodes::SMOD | opcodes::ADDMOD | 
-            opcodes::MULMOD | opcodes::EXP | opcodes::SIGNEXTEND |
-            opcodes::LT | opcodes::GT | opcodes::SLT | opcodes::SGT | 
-            opcodes::EQ | opcodes::ISZERO |
-            opcodes::AND | opcodes::OR | opcodes::XOR | opcodes::NOT |
-            opcodes::BYTE | opcodes::SHL | opcodes::SHR | opcodes::SAR => {
+            opcodes::ADD
+            | opcodes::MUL
+            | opcodes::SUB
+            | opcodes::DIV
+            | opcodes::SDIV
+            | opcodes::MOD
+            | opcodes::SMOD
+            | opcodes::ADDMOD
+            | opcodes::MULMOD
+            | opcodes::EXP
+            | opcodes::SIGNEXTEND
+            | opcodes::LT
+            | opcodes::GT
+            | opcodes::SLT
+            | opcodes::SGT
+            | opcodes::EQ
+            | opcodes::ISZERO
+            | opcodes::AND
+            | opcodes::OR
+            | opcodes::XOR
+            | opcodes::NOT
+            | opcodes::BYTE
+            | opcodes::SHL
+            | opcodes::SHR
+            | opcodes::SAR => {
                 handle_arithmetic(opcode, &mut self.stack)?;
             }
 

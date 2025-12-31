@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use primitive_types::U256;
+use std::collections::HashMap;
 
 #[derive(Debug, Default)]
 pub struct Storage {
@@ -8,7 +8,9 @@ pub struct Storage {
 
 impl Storage {
     pub fn new() -> Self {
-        Self { data: HashMap::new() }
+        Self {
+            data: HashMap::new(),
+        }
     }
 
     pub fn write(&mut self, key: U256, value: U256) {

@@ -1,5 +1,5 @@
-use primitive_types::U256;
 use crate::error::{EvmError, Result};
+use primitive_types::U256;
 
 const MAX_STACK_SIZE: usize = 1024;
 
@@ -10,7 +10,9 @@ pub struct Stack {
 
 impl Stack {
     pub fn new() -> Self {
-        Self { data: Vec::with_capacity(MAX_STACK_SIZE) }
+        Self {
+            data: Vec::with_capacity(MAX_STACK_SIZE),
+        }
     }
 
     pub fn push(&mut self, value: U256) -> Result<()> {
@@ -30,7 +32,10 @@ impl Stack {
     }
 
     pub fn at(&self, index: usize) -> Result<U256> {
-        self.data.get(index).copied().ok_or(EvmError::StackUnderflow)
+        self.data
+            .get(index)
+            .copied()
+            .ok_or(EvmError::StackUnderflow)
     }
 
     pub fn len(&self) -> usize {

@@ -1,7 +1,7 @@
-use primitive_types::U256;
 use crate::error::{EvmError, Result};
 use crate::opcodes;
 use crate::stack::Stack;
+use primitive_types::U256;
 
 pub fn handle_arithmetic(opcode: u8, stack: &mut Stack) -> Result<()> {
     match opcode {
@@ -142,7 +142,11 @@ pub fn handle_arithmetic(opcode: u8, stack: &mut Stack) -> Result<()> {
         opcodes::ISZERO => {
             ensure_stack_size(stack, 1)?;
             let a = stack.pop()?;
-            stack.push(if a.is_zero() { U256::one() } else { U256::zero() })?;
+            stack.push(if a.is_zero() {
+                U256::one()
+            } else {
+                U256::zero()
+            })?;
         }
         opcodes::AND => {
             ensure_stack_size(stack, 2)?;
@@ -226,11 +230,11 @@ fn exp_by_squaring(base: U256, exp: U256) -> U256 {
     if exp.is_zero() {
         return U256::one();
     }
-    
+
     let mut result = U256::one();
     let mut base = base;
     let mut exp = exp;
-    
+
     while !exp.is_zero() {
         if exp & U256::one() == U256::one() {
             result = result.overflowing_mul(base).0;
@@ -252,12 +256,12 @@ fn negate(value: U256) -> U256 {
 fn signed_div(a: U256, b: U256) -> U256 {
     let a_neg = is_negative(a);
     let b_neg = is_negative(b);
-    
+
     let a_abs = if a_neg { negate(a) } else { a };
     let b_abs = if b_neg { negate(b) } else { b };
-    
+
     let result = a_abs / b_abs;
-    
+
     if a_neg != b_neg {
         negate(result)
     } else {
@@ -268,23 +272,19 @@ fn signed_div(a: U256, b: U256) -> U256 {
 fn signed_mod(a: U256, b: U256) -> U256 {
     let a_neg = is_negative(a);
     let b_neg = is_negative(b);
-    
+
     let a_abs = if a_neg { negate(a) } else { a };
     let b_abs = if b_neg { negate(b) } else { b };
-    
+
     let result = a_abs % b_abs;
-    
-    if a_neg {
-        negate(result)
-    } else {
-        result
-    }
+
+    if a_neg { negate(result) } else { result }
 }
 
 fn signed_lt(a: U256, b: U256) -> bool {
     let a_neg = is_negative(a);
     let b_neg = is_negative(b);
-    
+
     match (a_neg, b_neg) {
         (true, false) => true,
         (false, true) => false,
@@ -325,11 +325,11 @@ fn mulmod(a: U256, b: U256, n: U256) -> U256 {
     if a.is_zero() || b.is_zero() {
         return U256::zero();
     }
-    
+
     let mut result = U256::zero();
     let mut a = a % n;
     let mut b = b;
-    
+
     while !b.is_zero() {
         if b & U256::one() == U256::one() {
             result = addmod(result, a, n);
