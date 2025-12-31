@@ -4,3 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+primitive-types = { version = "0.14.0", features = ["impl-codec"] }
+thiserror = "2.0.17"
+hex = "0.4"
+
+[dev-dependencies]
+pretty_assertions = "1.4"
